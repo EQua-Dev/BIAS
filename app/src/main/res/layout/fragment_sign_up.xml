@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_sign_up"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/auth_bg"
+    tools:context=".ui.auth.SignUp">
+
+    <include
+        android:id="@+id/pb_sign_up"
+        layout="@layout/pb_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="invisible"/>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:src="@drawable/splash"
+            android:contentDescription="@string/logo_image" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:fontFamily="cursive"
+            android:gravity="center_horizontal"
+            android:text="@string/sign_up_intro_note"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textStyle="bold" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:background="@drawable/auth_inner_bg"
+            app:cardElevation="4dp">
+
+            <LinearLayout
+                android:id="@+id/linear_form"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:background="@drawable/auth_inner_bg"
+                android:orientation="vertical">
+
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/sign_up_user_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:hint="@string/sign_up_first_name"
+                    android:inputType="text"
+                    android:paddingTop="20dp"
+                    android:textColor="@color/purple_500" />
+
+
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/sign_up_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:hint="@string/sign_up_email"
+                    android:inputType="textEmailAddress"
+                    android:textColor="@color/purple_500" />
+
+
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/sign_up_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:hint="@string/sign_up_password"
+                    android:inputType="textPassword"
+                    android:textColor="@color/purple_500" />
+
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/sign_up_confirm_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:hint="@string/sign_up_confirm_password"
+                    android:inputType="textPassword"
+                    android:textColor="@color/purple_500" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/txt_input_layout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
+                    app:boxStrokeColor="@color/purple_500">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/auto_complete_tv"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/dept_select"
+                        android:paddingTop="20dp"
+                        android:paddingBottom="20dp"
+                        android:inputType="none"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+<!--                <Spinner-->
+<!--                    android:id="@+id/spinner_department"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:padding="15dp"-->
+<!--                    android:spinnerMode="dialog" />-->
+
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+
+        <Button
+            android:id="@+id/sign_up_btn_register"
+            style="@style/TextAppearance.AppCompat.Widget.Button.Borderless.Colored"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text="@string/sign_up_button_sign_up" />
+
+        <TextView
+            android:id="@+id/signup_txt_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="@string/log_in_instead" />
+
+
+    </LinearLayout>
+
+</RelativeLayout>

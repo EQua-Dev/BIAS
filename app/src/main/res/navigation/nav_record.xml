@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_record"
+    app:startDestination="@id/attendance_overview">
+
+    <fragment
+        android:id="@+id/attendance_overview"
+        android:name="com.androidstrike.bias.AttendanceOverview"
+        android:label="@string/attendance_overview"
+        tools:layout="@layout/fragment_attendance_overview" >
+        <action
+            android:id="@+id/action_attendanceOverview_to_attendanceRecord"
+            app:destination="@id/attendance_record" />
+    </fragment>
+    <fragment
+        android:id="@+id/attendance_record"
+        android:name="com.androidstrike.bias.AttendanceRecord"
+        android:label="@string/attendance_records"
+        tools:layout="@layout/fragment_attendance_record" >
+        <action
+            android:id="@+id/action_attendanceRecord_to_attendanceOverview"
+            app:destination="@id/attendance_overview" />
+        <argument
+            android:name="courseName"
+            app:argType="com.androidstrike.bias.adapters.Course" />
+    </fragment>
+</navigation>

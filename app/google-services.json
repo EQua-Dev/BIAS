@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "726677320217",
+    "project_id": "tera-83a2a",
+    "storage_bucket": "tera-83a2a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:726677320217:android:4b432e55686e8663d43088",
+        "android_client_info": {
+          "package_name": "com.androidstrike.bias"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "726677320217-jvto90prvvg1043sef9is8lmne6230cp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDojWazNz0YiQmCKi27o8CmGuWYVHkQu8k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "726677320217-jvto90prvvg1043sef9is8lmne6230cp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:726677320217:android:fdbb86d6f72cc5fad43088",
+        "android_client_info": {
+          "package_name": "com.androidstrike.tera"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "726677320217-jvto90prvvg1043sef9is8lmne6230cp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDojWazNz0YiQmCKi27o8CmGuWYVHkQu8k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "726677320217-jvto90prvvg1043sef9is8lmne6230cp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

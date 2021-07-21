@@ -1,0 +1,43 @@
+<resources>
+    <string name="app_name">BIAS</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="sign_up_intro_note">First Time?</string>
+    <string name="sign_up_first_name">Username</string>
+    <string name="sign_up_email">Email</string>
+    <string name="sign_up_password">Password</string>
+    <string name="sign_up_confirm_password">Confirm Password</string>
+    <string name="sign_up_button_sign_up">Sign Up</string>
+    <string name="log_in_instead">Already a user? Login Instead</string>
+    <string name="logo_image">Logo Image</string>
+    <string name="log_in_welcome_note">Welcome Back</string>
+    <string name="log_in_password">Password</string>
+    <string name="log_in_button_confirm">Log In</string>
+    <string name="sign_up_text">Create New Account</string>
+    <string name="log_in_forgot_password">Forgot Password?</string>
+    <string name="text_enter_email_for_password_reset">Enter Your Registered Email</string>
+    <string name="text_reset_password">Reset Password</string>
+    <string name="dept_select">Computer Science</string>
+    <string name="menu_yesterday">Yesterday</string>
+    <string name="menu_today">Today</string>
+    <string name="menu_tomorrow">Tomorrow</string>
+    <string name="menu_history">History</string>
+    <string name="splash_description">splash image</string>
+    <string name="custom_dialog_title">Attendance Question</string>
+    <string name="btn_submit_attendance_text">Submit Answer</string>
+    <string name="no_location_detected">No Location Detected. Make sure location is enabled on the device.</string>
+    <string name="permission_denied_explanation">Permission was denied, but is needed for core functionality.</string>
+    <string name="settings">Settings</string>
+    <string name="permission_rationale">Location permission is needed for core functionality</string>
+    <string name="attendance_overview">Courses</string>
+    <string name="attendance_records">Attendance Record</string>
+
+    <string-array name="departments">
+        <item>Computer Science</item>
+        <item>Accounting</item>
+        <item>Mass Communication</item>
+        <item>Economics</item>
+        <item>Psychology</item>
+
+    </string-array>
+</resources>
