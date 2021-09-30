@@ -19,6 +19,7 @@ import com.androidstrike.bias.model.User
 import com.androidstrike.bias.ui.Landing
 import com.androidstrike.bias.utils.Common
 import com.androidstrike.bias.utils.toast
+import com.androidstrike.bias.utils.visible
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.ktx.toObject
 import com.rengwuxian.materialedittext.MaterialEditText
@@ -40,7 +41,7 @@ class SignIn : Fragment() {
     lateinit var btnRegister: Button
     lateinit var etEmail: MaterialEditText
     lateinit var etPassword: MaterialEditText
-    lateinit var pbLoading: LinearLayout
+    lateinit var pbLoading: ProgressBar
 
 
 
@@ -102,7 +103,7 @@ class SignIn : Fragment() {
 
     private fun signIn(email: String, password: String) {
         //implement sign in method
-        pbLoading.visibility = View.VISIBLE
+        pbLoading.visible(true)
         email.let { Common.mAuth.signInWithEmailAndPassword(it, password) }
             .addOnCompleteListener { it ->
                 if (it.isSuccessful) {
@@ -117,7 +118,7 @@ class SignIn : Fragment() {
 //                            }
                             Log.d("Equa", "signIn: ${Common.userDepartment}")
                             withContext(Dispatchers.Main){
-                                pbLoading.visibility = View.GONE
+                                pbLoading.visible(false)
                                 val i = Intent(requireContext(),Landing::class.java)
                                 startActivity(i)
 //                                findNavController().navigate(R.id.action_signIn_to_landing)
@@ -126,7 +127,7 @@ class SignIn : Fragment() {
 
                         } catch (e: Exception) {
                             withContext(Dispatchers.Main) {
-                                pbLoading.visibility = View.GONE
+                                pbLoading.visible(false)
                                 activity?.toast(e.message.toString())
                                 Log.d("Equa", "signIn: ${e.message.toString()}")
                             }
@@ -135,6 +136,7 @@ class SignIn : Fragment() {
 
 //                    Common.currentUser = firebaseUser?.uid!!
                 } else {
+                    pbLoading.visible(false)
                     activity?.toast(it.exception?.message.toString())
                 }
             }

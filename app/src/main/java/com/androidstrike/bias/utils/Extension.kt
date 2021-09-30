@@ -30,3 +30,8 @@ fun getDate(milliSeconds: Long?, dateFormat: String?): String? {
     calendar?.setTimeInMillis(milliSeconds!!)
     return formatter.format(calendar?.getTime())
 }
+
+//common function to handle progress bar visibility
+fun View.visible(isVisible: Boolean){
+    visibility = if (isVisible) View.VISIBLE else View.GONE
+}

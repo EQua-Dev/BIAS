@@ -16,6 +16,7 @@ import com.androidstrike.bias.utils.Common
 import com.androidstrike.bias.utils.Common.userCollectionRef
 import com.androidstrike.bias.utils.setOnSingleClickListener
 import com.androidstrike.bias.utils.toast
+import com.androidstrike.bias.utils.visible
 import com.rengwuxian.materialedittext.MaterialEditText
 import kotlinx.android.synthetic.main.fragment_sign_up.*
 import kotlinx.coroutines.CoroutineScope
@@ -36,7 +37,7 @@ class SignUp : Fragment(), AdapterView.OnItemSelectedListener  {
     lateinit var etUserEmail: MaterialEditText
     lateinit var etUserPassword: MaterialEditText
     lateinit var etUserConfirmPassword: MaterialEditText
-    lateinit var pbLoading: LinearLayout
+    lateinit var pbLoading: ProgressBar
 
     var userDepartment: String? = null
 
@@ -113,12 +114,6 @@ class SignUp : Fragment(), AdapterView.OnItemSelectedListener  {
             etUserConfirmPassword.requestFocus()
             return
         }
-//        if (!Common.PASSWORD_PATTERN.matcher(password).matches()) {
-//            sign_up_password.error =
-//                "Password too weak. Must Contain at least one uppercase, one lowercase, one number and one character"
-//            sign_up_password.requestFocus()
-//            return
-//        }
         else {
             registerUser(email, password)
         }
@@ -126,7 +121,7 @@ class SignUp : Fragment(), AdapterView.OnItemSelectedListener  {
 
     private fun registerUser(email: String, password: String) {
         //  implement user sign up
-        pbLoading.visibility = View.VISIBLE
+        pbLoading.visible(true)
         Common.mAuth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener {
                 if (it.isSuccessful) {
@@ -136,11 +131,11 @@ class SignUp : Fragment(), AdapterView.OnItemSelectedListener  {
                     saveUser(email, newUserId)
 //                    userId = Common.mAuth.currentUser?.uid
                     isFirstTime()
-                    pbLoading.visibility = View.GONE
+                    pbLoading.visible(false)
                     findNavController().navigate(R.id.action_signUp_to_signIn)
                 } else {
                     it.exception?.message?.let {
-                        pbLoading.visibility = View.GONE
+                        pbLoading.visible(false)
                         activity?.toast(it)
                     }
                 }

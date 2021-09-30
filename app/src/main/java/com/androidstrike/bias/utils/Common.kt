@@ -18,9 +18,12 @@ object Common {
     var clickedCourse: String = ""
     lateinit var currentUser: Any
 //    val caritasLocationLatitude = "6.503629437806139" //6.5036,7.569
-    val caritasLocationLatitudeNew = "6.41441"
+    val caritasLocationLatitudeNew = " 6.5039697" //Caritas
+    //katampe ext 6.5039697,7.568131
+//    val caritasLocationLatitudeNew = "6.41441" //enugu
 //    val caritasLocationLongitude = "7.5692427684538135"
-    val caritasLocationLongitudeNew = "7.50645"
+//    val caritasLocationLongitudeNew = "7.50645" //enugu
+    val caritasLocationLongitudeNew = "7.568131" //Caritas
     //6.414414414414415, 7.506451010257532
 
     //local hashmap to store the course attendance value from the cloud db

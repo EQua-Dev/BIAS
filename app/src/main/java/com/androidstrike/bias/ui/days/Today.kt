@@ -373,7 +373,7 @@ class Today : Fragment() {
                     .build()
                 executor = ContextCompat.getMainExecutor(requireContext())
 
-
+                //Fingerprint Authentication
                 biometricPrompt = androidx.biometric.BiometricPrompt(requireActivity(), executor,
                     object : androidx.biometric.BiometricPrompt.AuthenticationCallback() {
                         override fun onAuthenticationError(

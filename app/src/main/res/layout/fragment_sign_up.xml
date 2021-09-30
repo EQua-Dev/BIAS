@@ -8,15 +8,6 @@
     android:background="@drawable/auth_bg"
     tools:context=".ui.auth.SignUp">
 
-    <include
-        android:id="@+id/pb_sign_up"
-        layout="@layout/pb_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:visibility="invisible"/>
-
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -141,5 +132,12 @@
 
 
     </LinearLayout>
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:id="@+id/pb_sign_up"
+        android:visibility="invisible"/>
 
 </RelativeLayout>
