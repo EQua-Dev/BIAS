@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_landing"
     app:startDestination="@id/menu_today">
 
     <fragment
         android:id="@+id/menu_today"
         android:name="com.androidstrike.bias.ui.days.Today"
-        android:label="Today" />
+        android:label="Today" >
+        <action
+            android:id="@+id/action_menu_today_to_faceRecognition"
+            app:destination="@id/faceRecognition" />
+    </fragment>
     <fragment
         android:id="@+id/menu_tomorrow"
         android:name="com.androidstrike.bias.ui.days.Tomorrow"
@@ -16,4 +21,25 @@
         android:id="@+id/menu_yesterday"
         android:name="com.androidstrike.bias.ui.days.Yesterday"
         android:label="Yesterday" />
+    <fragment
+        android:id="@+id/faceRecognition"
+        android:name="com.androidstrike.bias.ui.days.FaceRecognition"
+        android:label="Face Recognition"
+        tools:layout="@layout/fragment_face_recognition">
+        <action
+            android:id="@+id/action_faceRecognition_to_menu_today"
+            app:destination="@id/menu_today" />
+        <argument
+            android:name="attendanceQuestion"
+            app:argType="string" />
+        <argument
+            android:name="attendanceAnswer"
+            app:argType="string" />
+        <argument
+            android:name="courseDetail"
+            app:argType="com.androidstrike.bias.model.CourseDetail" />
+        <argument
+            android:name="lectureTimeInMillis"
+            app:argType="string" />
+    </fragment>
 </navigation>

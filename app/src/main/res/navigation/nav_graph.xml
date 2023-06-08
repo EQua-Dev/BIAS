@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_signUp_to_signIn"
             app:destination="@id/signIn" />
+        <action
+            android:id="@+id/action_signUp_to_faceRegistration"
+            app:destination="@id/faceRegistration" />
     </fragment>
     <fragment
         android:id="@+id/signIn"
@@ -48,5 +51,17 @@
         <action
             android:id="@+id/action_splash_to_signUp"
             app:destination="@id/signUp" />
+    </fragment>
+    <fragment
+        android:id="@+id/faceRegistration"
+        android:name="com.androidstrike.bias.ui.auth.FaceRegistration"
+        android:label="fragment_face_registration"
+        tools:layout="@layout/fragment_face_registration" >
+        <action
+            android:id="@+id/action_faceRegistration_to_signIn"
+            app:destination="@id/signIn" />
+        <argument
+            android:name="regNumber"
+            app:argType="string" />
     </fragment>
 </navigation>

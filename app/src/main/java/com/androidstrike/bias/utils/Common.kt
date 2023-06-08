@@ -15,9 +15,11 @@ import kotlin.collections.HashMap
 
 object Common {
 
+    lateinit var new_student_reg_no: String
     var clickedCourse: String = ""
     lateinit var currentUser: Any
 //    val caritasLocationLatitude = "6.503629437806139" //6.5036,7.569
+    val homeLocation = "Ogui" //Caritas
     val caritasLocationLatitudeNew = " 6.5039697" //Caritas
     //katampe ext 6.5039697,7.568131
 //    val caritasLocationLatitudeNew = "6.41441" //enugu
@@ -45,6 +47,7 @@ object Common {
     var date: LocalDate = LocalDate.now()
     @RequiresApi(Build.VERSION_CODES.O)
     var dow = date.dayOfWeek.toString().toLowerCase(Locale.ROOT)
+    @RequiresApi(Build.VERSION_CODES.O)
     var dowGood = dow[0].toUpperCase()+dow.substring(1)
 
 
@@ -58,6 +61,7 @@ object Common {
     var tomorrow = LocalDate.now().plusDays(1)
     @RequiresApi(Build.VERSION_CODES.O)
     var dowTom = tomorrow.dayOfWeek.toString().toLowerCase(Locale.ROOT)
+    @RequiresApi(Build.VERSION_CODES.O)
     var dowTomGood = dowTom[0].toUpperCase()+ dowTom.substring(1)
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -68,6 +72,7 @@ object Common {
     var yesterday = LocalDate.now().minusDays(1)
     @RequiresApi(Build.VERSION_CODES.O)
     var dowYes = yesterday.dayOfWeek.toString().toLowerCase(Locale.ROOT)
+    @RequiresApi(Build.VERSION_CODES.O)
     var dowYesGood = dowYes[0].toUpperCase()+ dowYes.substring(1)
     @RequiresApi(Build.VERSION_CODES.O)
     var formattedYesterday = yesterday.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL))

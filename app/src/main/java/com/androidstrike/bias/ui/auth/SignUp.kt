@@ -29,11 +29,13 @@ class SignUp : Fragment(), AdapterView.OnItemSelectedListener  {
 
     private var emailAddress: String? = null
     lateinit var uName: String
+    lateinit var uRegNo: String
     lateinit var email: String
     lateinit var password: String
     lateinit var confirmPassword: String
     lateinit var department: String
     lateinit var etUsername: MaterialEditText
+    lateinit var etRegNo: MaterialEditText
     lateinit var etUserEmail: MaterialEditText
     lateinit var etUserPassword: MaterialEditText
     lateinit var etUserConfirmPassword: MaterialEditText
@@ -52,6 +54,7 @@ class SignUp : Fragment(), AdapterView.OnItemSelectedListener  {
         val signUpTxtLogin = view.findViewById<TextView>(R.id.signup_txt_login)
         val signUpButtonRegister = view.findViewById<Button>(R.id.sign_up_btn_register)
         etUsername = view.findViewById(R.id.sign_up_user_name)
+        etRegNo = view.findViewById(R.id.sign_up_reg_no)
         etUserEmail = view.findViewById(R.id.sign_up_email)
         etUserPassword = view.findViewById(R.id.sign_up_password)
         etUserConfirmPassword = view.findViewById(R.id.sign_up_confirm_password)
@@ -64,15 +67,20 @@ class SignUp : Fragment(), AdapterView.OnItemSelectedListener  {
 
         department = autoCompleteTextView.text.toString()
 
+
+
         signUpTxtLogin.setOnClickListener {
             findNavController().navigate(R.id.action_signUp_to_signIn)
         }
 
         signUpButtonRegister.setOnSingleClickListener {
             uName = etUsername.text.toString().trim()
+            uRegNo = etRegNo.text.toString().trim()
             email = etUserEmail.text.toString().trim()
             password = etUserPassword.text.toString().trim()
             confirmPassword = etUserConfirmPassword.text.toString().trim()
+            department = autoCompleteTextView.text.toString()
+
 
             validateInput()
 
@@ -87,6 +95,13 @@ class SignUp : Fragment(), AdapterView.OnItemSelectedListener  {
         if (uName.isEmpty()) {
             etUsername.error = "First Name Required"
             etUsername.requestFocus()
+            return
+        }
+
+        //if user reg no field is empty
+        if (uRegNo.isEmpty()) {
+            etRegNo.error = "Reg No Required"
+            etRegNo.requestFocus()
             return
         }
         // if the email and password fields are empty we display error messages
@@ -132,7 +147,9 @@ class SignUp : Fragment(), AdapterView.OnItemSelectedListener  {
 //                    userId = Common.mAuth.currentUser?.uid
                     isFirstTime()
                     pbLoading.visible(false)
-                    findNavController().navigate(R.id.action_signUp_to_signIn)
+                    val navToFaceReg = SignUpDirections.actionSignUpToFaceRegistration(uRegNo)
+                    findNavController().navigate(navToFaceReg)
+                    //findNavController().navigate(R.id.action_signUp_to_signIn)
                 } else {
                     it.exception?.message?.let {
                         pbLoading.visible(false)
@@ -151,7 +168,7 @@ class SignUp : Fragment(), AdapterView.OnItemSelectedListener  {
     private fun saveNewUser(user: User) = CoroutineScope(Dispatchers.IO).launch {
         try {
             //create new user in firestore
-            userCollectionRef.document(user.uid.toString()).set(user).await()
+            userCollectionRef.document(user.regNo).set(user).await()
         }catch (e: Exception){
             withContext(Dispatchers.Main){
                 activity?.toast(e.message.toString())
@@ -164,8 +181,9 @@ class SignUp : Fragment(), AdapterView.OnItemSelectedListener  {
         val department = userDepartment.toString()
         val uid = newUserId.toString()
         val newEmail = email
+        val userRegNo = etRegNo.text.toString()
 
-        return User(userName,newEmail,department,uid)
+        return User(userName,newEmail,department,uid,userRegNo)
     }
 
     //boolean shared pref to store whether user is using the app for the 1st time

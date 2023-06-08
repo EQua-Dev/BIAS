@@ -1,7 +1,10 @@
 package com.androidstrike.bias.model
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 import java.util.*
 
+@Parcelize
 data class CourseDetail(
     var course: String? = null,
     var course_time: String? = null,
@@ -13,4 +16,4 @@ data class CourseDetail(
     var attendance_question: String? = "",
     var attendance_answer: String? = ""
 //    var newTime:
-)
+): Parcelable

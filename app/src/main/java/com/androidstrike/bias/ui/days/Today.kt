@@ -6,6 +6,8 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.Address
+import android.location.Geocoder
 import android.location.Location
 import android.net.Uri
 import android.os.Build
@@ -27,6 +29,7 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -42,6 +45,7 @@ import com.androidstrike.bias.utils.Common
 import com.androidstrike.bias.utils.Common.caritasLocationLatitudeNew
 //import com.androidstrike.bias.utils.Common.caritasLocationLongitude
 import com.androidstrike.bias.utils.Common.caritasLocationLongitudeNew
+import com.androidstrike.bias.utils.Common.homeLocation
 import com.androidstrike.bias.utils.Common.userCollectionRef
 import com.androidstrike.bias.utils.Common.userId
 import com.androidstrike.bias.utils.IRecyclerItemClickListener
@@ -86,6 +90,7 @@ class Today : Fragment() {
 
     lateinit var userLong: String
     lateinit var userLat: String
+    lateinit var userLocation: String
     private lateinit var container: View
 
 
@@ -220,7 +225,8 @@ class Today : Fragment() {
                                         activity?.toast("You Cannot Mark Attendance By This Time")
                                     } else {
                                         //check if user location corresponds with lecture location
-                                        if (!isLatitudeEqual() || !isLongitudeEqual()) {
+//                                        if (!isLatitudeEqual() || !isLongitudeEqual()) {
+                                        if (!isLocationEqual()) {
                                             activity?.toast("You are not in the class")
 
                                         } else {
@@ -241,11 +247,18 @@ class Today : Fragment() {
                                                 //..and answer
                                                 val attendanceAnswer = model.attendance_answer
 
+                                                Log.d(
+                                                    TAG,
+                                                    "onItemClickListener: $attendanceQuestion $attendanceAnswer")
+                                                //check the face recognition
+                                                val navToFaceRecognition = TodayDirections.actionMenuTodayToFaceRecognition(attendanceQuestion!!, attendanceAnswer!!, model, lectureTimeInMillis)
+                                                findNavController().navigate(navToFaceRecognition)
+                                               // checkFaceRecognition(attendanceQuestion, attendanceAnswer)
                                                 //shows the question in a dialog
-                                                showAttendanceDialog(
-                                                    attendanceQuestion,
-                                                    attendanceAnswer
-                                                )
+//                                                showAttendanceDialog(
+//                                                    attendanceQuestion,
+//                                                    attendanceAnswer
+//                                                )
 
                                                 //?? Trying to figure its purpose
                                                 val sharedPref =
@@ -268,44 +281,44 @@ class Today : Fragment() {
                                                         timeInMillis: isAttended(Boolean)
                                                  */
 
-                                                var attendanceHashSubMapToAdd =
-                                                    HashMap<String, Map<String, Boolean>>()
-                                                var attendanceHashMapToAdd =
-                                                    HashMap<String, Map<String, Map<String, Boolean>>>()
-                                                attendanceHashSubMapToAdd["${model.course}"] =
-                                                    attendanceMapFun(
-                                                        lectureTimeInMillis,
-                                                        isAttended
-                                                    )
-                                                attendanceHashMapToAdd["Classes"] =
-                                                    attendanceHashSubMapToAdd
-//                                                user?.classes = attendanceHashSubMapToAdd
-                                                CoroutineScope(Dispatchers.IO).launch {
-                                                    val mapQuery =
-                                                        Common.userCollectionRef.whereEqualTo(
-                                                            "uid",
-                                                            userId.toString()
-                                                        ).get().await()
-
-                                                    if (mapQuery.documents.isNotEmpty()) {
-                                                        for (document in mapQuery) {
-                                                            try {
-                                                                //sets the attendance reult hashmap to the cloud under that student's profile
-                                                                userCollectionRef.document(document.id)
-                                                                    .set(
-                                                                        attendanceHashMapToAdd,
-                                                                        SetOptions.merge()
-                                                                    ).await()
-                                                            } catch (e: Exception) {
-                                                                activity?.toast(e.message.toString())
-                                                                Log.d(
-                                                                    "Equa",
-                                                                    "onItemClickListener: ${e.message.toString()}"
-                                                                )
-                                                            }
-                                                        }
-                                                    }
-                                                }
+//                                                var attendanceHashSubMapToAdd =
+//                                                    HashMap<String, Map<String, Boolean>>()
+//                                                var attendanceHashMapToAdd =
+//                                                    HashMap<String, Map<String, Map<String, Boolean>>>()
+//                                                attendanceHashSubMapToAdd["${model.course}"] =
+//                                                    attendanceMapFun(
+//                                                        lectureTimeInMillis,
+//                                                        isAttended
+//                                                    )
+//                                                attendanceHashMapToAdd["Classes"] =
+//                                                    attendanceHashSubMapToAdd
+////                                                user?.classes = attendanceHashSubMapToAdd
+//                                                CoroutineScope(Dispatchers.IO).launch {
+//                                                    val mapQuery =
+//                                                        Common.userCollectionRef.whereEqualTo(
+//                                                            "uid",
+//                                                            userId.toString()
+//                                                        ).get().await()
+//
+//                                                    if (mapQuery.documents.isNotEmpty()) {
+//                                                        for (document in mapQuery) {
+//                                                            try {
+//                                                                //sets the attendance reult hashmap to the cloud under that student's profile
+//                                                                userCollectionRef.document(document.id)
+//                                                                    .set(
+//                                                                        attendanceHashMapToAdd,
+//                                                                        SetOptions.merge()
+//                                                                    ).await()
+//                                                            } catch (e: Exception) {
+//                                                                activity?.toast(e.message.toString())
+//                                                                Log.d(
+//                                                                    "Equa",
+//                                                                    "onItemClickListener: ${e.message.toString()}"
+//                                                                )
+//                                                            }
+//                                                        }
+//                                                    }
+//                                                }
                                             }
 //                                            }
                                         }
@@ -327,7 +340,13 @@ class Today : Fragment() {
     }
 
 
-    fun isLatitudeEqual(): Boolean {
+    fun isLocationEqual(): Boolean {
+        //function to check if the user latitude is same with class latitude
+        if (userLocation == homeLocation) {
+            return true
+        }
+        return false
+    }   fun isLatitudeEqual(): Boolean {
         //function to check if the user latitude is same with class latitude
         if (userLat == caritasLocationLatitudeNew) {
             return true
@@ -343,151 +362,151 @@ class Today : Fragment() {
         return false
     }
 
-    private fun showAttendanceDialog(attendanceQuestion: String?, attendanceAnswer: String?) {
+//    private fun showAttendanceDialog(attendanceQuestion: String?, attendanceAnswer: String?) {
+//
+//        //the lines of code below set up an edittext layout programmatically
+//        val etBuilder = MaterialAlertDialogBuilder(requireContext())
+//
+//        etBuilder.setTitle(attendanceQuestion)
+//
+//        val constraintLayout = getEditTextLayout(requireContext())
+//        etBuilder.setView(constraintLayout)
+//
+//        val textInputLayout =
+//            constraintLayout.findViewWithTag<TextInputLayout>("textInputLayoutTag")
+//        val textInputEditText =
+//            constraintLayout.findViewWithTag<TextInputEditText>("textInputEditTextTag")
+//        textInputEditText.inputType = InputType.TYPE_CLASS_NUMBER
+//
+//        val attendancePrintTrialCount = 0
+//        var attendanceQuestionTrialCount = 0
+//        // alert dialog positive button
+//        etBuilder.setPositiveButton("Submit") { dialog, which ->
+//            val userAnswer: String = textInputEditText.text.toString()
+//            if (userAnswer == attendanceAnswer) {
+//                //if the user's answer is correct, prompt for biometric authentication
+//                promptInfo = androidx.biometric.BiometricPrompt.PromptInfo.Builder()
+//                    .setTitle("Biometric Authentication")
+//                    .setSubtitle("Take Attendance using fingerprint")
+//                    .setNegativeButtonText("Cancel")
+//                    .build()
+//                executor = ContextCompat.getMainExecutor(requireContext())
+//
+//                //Fingerprint Authentication
+//                biometricPrompt = androidx.biometric.BiometricPrompt(requireActivity(), executor,
+//                    object : androidx.biometric.BiometricPrompt.AuthenticationCallback() {
+//                        override fun onAuthenticationError(
+//                            errorCode: Int,
+//                            errString: CharSequence
+//                        ) {
+//                            super.onAuthenticationError(errorCode, errString)
+//                            activity?.toast("Error: $errString")
+////                            biometricPrompt.cancelAuthentication()
+//                        }
+//
+//                        override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+//                            super.onAuthenticationSucceeded(result)
+//                            activity?.toast("Attendance Taken")
+//                            isAttended = true
+//                        }
+//
+//                        override fun onAuthenticationFailed() {
+//                            super.onAuthenticationFailed()
+//                            activity?.toast("Authentication Failed, Try After 1 Minute")
+////                            biometricPrompt.cancelAuthentication()
+////                            Handler().postDelayed({
+//
+////                            }, 100000)
+//                            dialog.dismiss()
+//                        }
+//                    })
+//
+//                biometricPrompt.authenticate(promptInfo)
+//
+//                //?? still trying to figure out its purpose in this code
+//                val sharedPref =
+//                    requireActivity().getSharedPreferences(
+//                        "VerificationStatus",
+//                        Context.MODE_PRIVATE
+//                    )
+//                val editor = sharedPref.edit()
+//                editor.putBoolean("isVerified", true)
+//                editor.apply()
+//
+//            } else {
+//                //this block is supposed to set a limit to the number of attempts a uer has to answer the class question
+//                attendanceQuestionTrialCount++
+//                when (attendanceQuestionTrialCount) {
+//                    1 -> {
+//                        // TODO: 04/07/2021 2: If answer is wrong, give 2 more chances
+//                        activity?.toast("Code not valid. 2 more attempts!")
+//                    }
+//                    2 -> {
+//                        activity?.toast("Code not valid. 1 more attempt!")
+//                    }
+//                    3 -> {
+//                        // TODO: 04/07/2021 3: If answer is wrong 3x, try again after 1 minutes
+//                        activity?.toast("Too many attempts, Try again later!")
+//                        Handler().postDelayed({
+//
+//                        }, 100000)
+//                        dialog.dismiss()
+//                    }
+//                }
+//
+//            }
+//        }
+//
+//        // alert dialog other buttons
+//        etBuilder.setNegativeButton("No", null)
+//        etBuilder.setNeutralButton("Cancel", null)
+//
+//        // set dialog non cancelable
+//        etBuilder.setCancelable(false)
+//
+//        // finally, create the alert dialog and show it
+//        val dialog = etBuilder.create()
+//
+//        dialog.show()
+//
+//        // initially disable the positive button
+//        dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
+//
+//        // edit text text change listener
+//        textInputEditText.addTextChangedListener(object : TextWatcher {
+//            //sets a watcher to the edit text and performs certain functions and validation
+//            override fun afterTextChanged(p0: Editable?) {
+//            }
+//
+//            override fun beforeTextChanged(
+//                p0: CharSequence?, p1: Int,
+//                p2: Int, p3: Int
+//            ) {
+//            }
+//
+//            override fun onTextChanged(
+//                p0: CharSequence?, p1: Int,
+//                p2: Int, p3: Int
+//            ) {
+//                if (p0.isNullOrBlank()) {
+//                    textInputLayout.error = "Code is required"
+//                    dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+//                        .isEnabled = false
+//                } else {
+//                    textInputLayout.error = ""
+//                    dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+//                        .isEnabled = true
+//                }
+//            }
+//        })
+//
+//    }
 
-        //the lines of code below set up an edittext layout programmatically
-        val etBuilder = MaterialAlertDialogBuilder(requireContext())
-
-        etBuilder.setTitle(attendanceQuestion)
-
-        val constraintLayout = getEditTextLayout(requireContext())
-        etBuilder.setView(constraintLayout)
-
-        val textInputLayout =
-            constraintLayout.findViewWithTag<TextInputLayout>("textInputLayoutTag")
-        val textInputEditText =
-            constraintLayout.findViewWithTag<TextInputEditText>("textInputEditTextTag")
-        textInputEditText.inputType = InputType.TYPE_CLASS_NUMBER
-
-        val attendancePrintTrialCount = 0
-        var attendanceQuestionTrialCount = 0
-        // alert dialog positive button
-        etBuilder.setPositiveButton("Submit") { dialog, which ->
-            val userAnswer: String = textInputEditText.text.toString()
-            if (userAnswer == attendanceAnswer) {
-                //if the user's answer is correct, prompt for biometric authentication
-                promptInfo = androidx.biometric.BiometricPrompt.PromptInfo.Builder()
-                    .setTitle("Biometric Authentication")
-                    .setSubtitle("Take Attendance using fingerprint")
-                    .setNegativeButtonText("Cancel")
-                    .build()
-                executor = ContextCompat.getMainExecutor(requireContext())
-
-                //Fingerprint Authentication
-                biometricPrompt = androidx.biometric.BiometricPrompt(requireActivity(), executor,
-                    object : androidx.biometric.BiometricPrompt.AuthenticationCallback() {
-                        override fun onAuthenticationError(
-                            errorCode: Int,
-                            errString: CharSequence
-                        ) {
-                            super.onAuthenticationError(errorCode, errString)
-                            activity?.toast("Error: $errString")
-//                            biometricPrompt.cancelAuthentication()
-                        }
-
-                        override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-                            super.onAuthenticationSucceeded(result)
-                            activity?.toast("Attendance Taken")
-                            isAttended = true
-                        }
-
-                        override fun onAuthenticationFailed() {
-                            super.onAuthenticationFailed()
-                            activity?.toast("Authentication Failed, Try After 1 Minute")
-//                            biometricPrompt.cancelAuthentication()
-//                            Handler().postDelayed({
-
-//                            }, 100000)
-                            dialog.dismiss()
-                        }
-                    })
-
-                biometricPrompt.authenticate(promptInfo)
-
-                //?? still trying to figure out its purpose in this code
-                val sharedPref =
-                    requireActivity().getSharedPreferences(
-                        "VerificationStatus",
-                        Context.MODE_PRIVATE
-                    )
-                val editor = sharedPref.edit()
-                editor.putBoolean("isVerified", true)
-                editor.apply()
-
-            } else {
-                //this block is supposed to set a limit to the number of attempts a uer has to answer the class question
-                attendanceQuestionTrialCount++
-                when (attendanceQuestionTrialCount) {
-                    1 -> {
-                        // TODO: 04/07/2021 2: If answer is wrong, give 2 more chances
-                        activity?.toast("Code not valid. 2 more attempts!")
-                    }
-                    2 -> {
-                        activity?.toast("Code not valid. 1 more attempt!")
-                    }
-                    3 -> {
-                        // TODO: 04/07/2021 3: If answer is wrong 3x, try again after 1 minutes
-                        activity?.toast("Too many attempts, Try again later!")
-                        Handler().postDelayed({
-
-                        }, 100000)
-                        dialog.dismiss()
-                    }
-                }
-
-            }
-        }
-
-        // alert dialog other buttons
-        etBuilder.setNegativeButton("No", null)
-        etBuilder.setNeutralButton("Cancel", null)
-
-        // set dialog non cancelable
-        etBuilder.setCancelable(false)
-
-        // finally, create the alert dialog and show it
-        val dialog = etBuilder.create()
-
-        dialog.show()
-
-        // initially disable the positive button
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
-
-        // edit text text change listener
-        textInputEditText.addTextChangedListener(object : TextWatcher {
-            //sets a watcher to the edit text and performs certain functions and validation
-            override fun afterTextChanged(p0: Editable?) {
-            }
-
-            override fun beforeTextChanged(
-                p0: CharSequence?, p1: Int,
-                p2: Int, p3: Int
-            ) {
-            }
-
-            override fun onTextChanged(
-                p0: CharSequence?, p1: Int,
-                p2: Int, p3: Int
-            ) {
-                if (p0.isNullOrBlank()) {
-                    textInputLayout.error = "Code is required"
-                    dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-                        .isEnabled = false
-                } else {
-                    textInputLayout.error = ""
-                    dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-                        .isEnabled = true
-                }
-            }
-        })
-
-    }
-
-    fun attendanceMapFun(time: String, truth: Boolean): HashMap<String, Boolean> {
-        var attendanceHashMap = HashMap<String, Boolean>()
-        attendanceHashMap[time] = truth
-        return attendanceHashMap
-    }
+//    fun attendanceMapFun(time: String, truth: Boolean): HashMap<String, Boolean> {
+//        var attendanceHashMap = HashMap<String, Boolean>()
+//        attendanceHashMap[time] = truth
+//        return attendanceHashMap
+//    }
 
     //?? still trying to figure out its purpose in this code
     private fun isRated(): Boolean {
@@ -497,54 +516,54 @@ class Today : Fragment() {
         )
         return sharedPrefs.getBoolean(lectureTimeInMillis, false)
     }
-
-    private fun getEditTextLayout(context: Context): ConstraintLayout {
-        //builds the edit text layout programmatically
-        val constraintLayout = ConstraintLayout(context)
-        val layoutParams = ConstraintLayout.LayoutParams(
-            ConstraintLayout.LayoutParams.MATCH_PARENT,
-            ConstraintLayout.LayoutParams.WRAP_CONTENT
-        )
-        constraintLayout.layoutParams = layoutParams
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            constraintLayout.id = View.generateViewId()
-        }
-
-        val textInputLayout = TextInputLayout(context)
-        textInputLayout.boxBackgroundMode = TextInputLayout.BOX_BACKGROUND_OUTLINE
-        layoutParams.setMargins(
-            32.toDp(context),
-            8.toDp(context),
-            32.toDp(context),
-            8.toDp(context)
-        )
-        textInputLayout.layoutParams = layoutParams
-        textInputLayout.hint = "Input Answer"
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            textInputLayout.id = View.generateViewId()
-        }
-        textInputLayout.tag = "textInputLayoutTag"
-
-
-        val textInputEditText = TextInputEditText(context)
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            textInputEditText.id = View.generateViewId()
-        }
-        textInputEditText.tag = "textInputEditTextTag"
-
-        textInputLayout.addView(textInputEditText)
-
-        val constraintSet = ConstraintSet()
-        constraintSet.clone(constraintLayout)
-
-        constraintLayout.addView(textInputLayout)
-        return constraintLayout
-    }
-
-    // extension method to convert pixels to dp
-    fun Int.toDp(context: Context): Int = TypedValue.applyDimension(
-        TypedValue.COMPLEX_UNIT_DIP, this.toFloat(), context.resources.displayMetrics
-    ).toInt()
+//
+//    private fun getEditTextLayout(context: Context): ConstraintLayout {
+//        //builds the edit text layout programmatically
+//        val constraintLayout = ConstraintLayout(context)
+//        val layoutParams = ConstraintLayout.LayoutParams(
+//            ConstraintLayout.LayoutParams.MATCH_PARENT,
+//            ConstraintLayout.LayoutParams.WRAP_CONTENT
+//        )
+//        constraintLayout.layoutParams = layoutParams
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
+//            constraintLayout.id = View.generateViewId()
+//        }
+//
+//        val textInputLayout = TextInputLayout(context)
+//        textInputLayout.boxBackgroundMode = TextInputLayout.BOX_BACKGROUND_OUTLINE
+//        layoutParams.setMargins(
+//            32.toDp(context),
+//            8.toDp(context),
+//            32.toDp(context),
+//            8.toDp(context)
+//        )
+//        textInputLayout.layoutParams = layoutParams
+//        textInputLayout.hint = "Input Answer"
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
+//            textInputLayout.id = View.generateViewId()
+//        }
+//        textInputLayout.tag = "textInputLayoutTag"
+//
+//
+//        val textInputEditText = TextInputEditText(context)
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
+//            textInputEditText.id = View.generateViewId()
+//        }
+//        textInputEditText.tag = "textInputEditTextTag"
+//
+//        textInputLayout.addView(textInputEditText)
+//
+//        val constraintSet = ConstraintSet()
+//        constraintSet.clone(constraintLayout)
+//
+//        constraintLayout.addView(textInputLayout)
+//        return constraintLayout
+//    }
+//
+//    // extension method to convert pixels to dp
+//    fun Int.toDp(context: Context): Int = TypedValue.applyDimension(
+//        TypedValue.COMPLEX_UNIT_DIP, this.toFloat(), context.resources.displayMetrics
+//    ).toInt()
 
     private fun checkPermissions(): Boolean {
         //checks if the required app permissions are granted
@@ -664,6 +683,17 @@ class Today : Fragment() {
                 if (task.isSuccessful && task.result != null) {
                     mLastLocation = task.result
 
+
+                        val geocoder = Geocoder(requireContext(), Locale.getDefault())
+                        val list: List<Address> =
+                            geocoder.getFromLocation(mLastLocation!!.latitude, mLastLocation!!.longitude, 1)!!
+
+                        //mUsageLocality = "Locality\n${list[0].locality}"
+                        val currentLocation = list[0].subLocality// .getAddressLine(0)
+                        requireContext().toast("$currentLocation")
+
+
+                    //mLastLocation
                     mLatitudeLabel = "${(mLastLocation)!!.latitude}"
                     mLongitudeLabel = "${(mLastLocation)!!.longitude}"
 
@@ -671,6 +701,7 @@ class Today : Fragment() {
                     //this was in order to avoid making a comparison with the user's pin point location, which changes with even a change in static direction
                     userLong = mLongitudeLabel!!.take(7)
                     userLat = mLatitudeLabel!!.take(7)
+                    userLocation = currentLocation
 
                     Log.d("LocationHome", "getLastLocation: $mLatitudeLabel, $mLongitudeLabel")
 

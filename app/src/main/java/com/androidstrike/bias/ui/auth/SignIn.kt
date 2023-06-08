@@ -119,6 +119,7 @@ class SignIn : Fragment() {
                             Log.d("Equa", "signIn: ${Common.userDepartment}")
                             withContext(Dispatchers.Main){
                                 pbLoading.visible(false)
+
                                 val i = Intent(requireContext(),Landing::class.java)
                                 startActivity(i)
 //                                findNavController().navigate(R.id.action_signIn_to_landing)

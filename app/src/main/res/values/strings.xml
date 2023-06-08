@@ -31,6 +31,7 @@
     <string name="permission_rationale">Location permission is needed for core functionality</string>
     <string name="attendance_overview">Courses</string>
     <string name="attendance_records">Attendance Record</string>
+    <string name="sign_up_reg_no">Reg No</string>
 
     <string-array name="departments">
         <item>Computer Science</item>

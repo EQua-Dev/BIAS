@@ -56,6 +56,16 @@
                     android:paddingTop="20dp"
                     android:textColor="@color/purple_500" />
 
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/sign_up_reg_no"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:hint="@string/sign_up_reg_no"
+                    android:inputType="text"
+                    android:paddingTop="20dp"
+                    android:textColor="@color/purple_500" />
+
 
                 <com.rengwuxian.materialedittext.MaterialEditText
                     android:id="@+id/sign_up_email"
