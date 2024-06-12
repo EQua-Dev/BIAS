@@ -23,7 +23,6 @@ import com.androidstrike.bias.utils.visible
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.ktx.toObject
 import com.rengwuxian.materialedittext.MaterialEditText
-import kotlinx.android.synthetic.main.fragment_sign_in.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

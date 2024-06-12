@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.androidstrike.bias.R
 import com.androidstrike.bias.adapters.CourseAdapter
+import com.androidstrike.bias.databinding.FragmentYesterdayBinding
 import com.androidstrike.bias.model.CourseDetail
 //import com.androidstrike.tera.data.CourseDetail
 //import com.androidstrike.tera.ui.adapter.CourseAdapter
@@ -28,7 +29,6 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import kotlinx.android.synthetic.main.fragment_yesterday.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -41,6 +41,8 @@ import java.time.format.FormatStyle
 
 class Yesterday : Fragment() {
 
+    private var _binding: FragmentYesterdayBinding? = null
+    private val binding get() = _binding!!
     var courseAdapter: FirestoreRecyclerAdapter<CourseDetail, CourseAdapter>? = null
     lateinit var lectureTime: String
 //    val connectionCheck = History().isNetworkAvailable(context)
@@ -51,7 +53,8 @@ class Yesterday : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_yesterday, container, false)
+        _binding = FragmentYesterdayBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
 
@@ -60,8 +63,8 @@ class Yesterday : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         val layoutManager = LinearLayoutManager(requireContext())
-        rv_yesterday.layoutManager = layoutManager
-        rv_yesterday.addItemDecoration(
+        binding.rvYesterday.layoutManager = layoutManager
+        binding.rvYesterday.addItemDecoration(
             DividerItemDecoration(
                 requireContext(),
                 layoutManager.orientation
@@ -73,9 +76,9 @@ class Yesterday : Fragment() {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun getRealTimeCourses() {
         //if the 'yesterday' is Friday or Saturday, show the text below
-        if (Common.dowYesGood == "Friday" || Common.dowYesGood == "Saturday") {
-            txt_yes.visibility = View.VISIBLE
-            txt_yes.text = "Lecture Free Day!"
+        if (Common.dowYesGood == "Saturday") {
+            binding.txtYes.visibility = View.VISIBLE
+            binding.txtYes.text = "Lecture Free Day!"
         } else {
             //if the 'yesterday' is between Monday and Thursday, fetch the day of the week
             // ...and access its corresponding collection in the firestore
@@ -133,8 +136,8 @@ class Yesterday : Fragment() {
                     }
 
                 }
-
-            rv_yesterday.adapter = courseAdapter
+courseAdapter?.startListening()
+            binding.rvYesterday.adapter = courseAdapter
 
         }
     }

@@ -10,11 +10,11 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.androidstrike.bias.adapters.RecordsAdapter
+import com.androidstrike.bias.databinding.FragmentAttendanceRecordBinding
+import com.androidstrike.bias.databinding.FragmentYesterdayBinding
 import com.androidstrike.bias.utils.Common
 import com.androidstrike.bias.utils.getDate
 import com.androidstrike.bias.utils.toast
-import kotlinx.android.synthetic.main.fragment_attendance_overview.*
-import kotlinx.android.synthetic.main.fragment_attendance_record.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -25,6 +25,10 @@ import java.util.logging.SimpleFormatter
 
 class AttendanceRecord : Fragment() {
 
+
+    private var _binding: FragmentAttendanceRecordBinding? = null
+    private val binding get() = _binding!!
+
     private val args by navArgs<AttendanceRecordArgs>()
     var dateNew: String? = ""
 
@@ -34,7 +38,8 @@ class AttendanceRecord : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_attendance_record, container, false)
+        _binding = FragmentAttendanceRecordBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -90,10 +95,10 @@ class AttendanceRecord : Fragment() {
 
         val layoutManager = LinearLayoutManager(requireContext())
         val recordAdapter = RecordsAdapter()
-        rv_record_history.adapter = recordAdapter
+        binding.rvRecordHistory.adapter = recordAdapter
 
-        rv_record_history.layoutManager = layoutManager
-        rv_record_history.addItemDecoration(
+        binding.rvRecordHistory.layoutManager = layoutManager
+        binding.rvRecordHistory.addItemDecoration(
             DividerItemDecoration(
                 requireContext(),
                 layoutManager.orientation

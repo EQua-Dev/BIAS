@@ -2,17 +2,19 @@ package com.androidstrike.bias.ui
 
 import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.androidstrike.bias.R
+import com.androidstrike.bias.databinding.FragmentSplashBinding
 import com.androidstrike.bias.utils.Common
-import kotlinx.android.synthetic.main.fragment_splash.*
 
 class Splash : Fragment() {
 
+    private var _binding: FragmentSplashBinding? = null
+    private val binding get() = _binding!!
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -21,14 +23,14 @@ class Splash : Fragment() {
 //
 //        },3000)
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_splash, container, false)
-    }
+        _binding = FragmentSplashBinding.inflate(inflater, container, false)
+        return binding.root    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        logo_image.alpha = 0f
-        logo_image.animate().setDuration(2000).alpha(1f).withEndAction {
+        binding.logoImage.alpha = 0f
+        binding.logoImage.animate().setDuration(2000).alpha(1f).withEndAction {
             if (!isFirstTime()) { //checks if it is first time launching app
                 findNavController().navigate(R.id.action_splash_to_signIn)
             } else

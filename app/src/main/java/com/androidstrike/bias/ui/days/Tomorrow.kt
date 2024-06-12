@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.androidstrike.bias.R
 import com.androidstrike.bias.adapters.CourseAdapter
+import com.androidstrike.bias.databinding.FragmentTommorrowBinding
 import com.androidstrike.bias.model.CourseDetail
 //import com.androidstrike.tera.data.CourseDetail
 //import com.androidstrike.tera.ui.adapter.CourseAdapter
@@ -22,11 +23,13 @@ import com.androidstrike.bias.utils.toast
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.android.synthetic.main.fragment_tommorrow.*
 import java.lang.Exception
 import java.time.LocalTime
 
 class Tomorrow : Fragment() {
+
+    private var _binding: FragmentTommorrowBinding? = null
+    private val binding get() = _binding!!
 
     private var courseAdapter: FirestoreRecyclerAdapter<CourseDetail, CourseAdapter>? = null
 //    private val connectionCheck = History().isNetworkAvailable(context) //invoke network connection check from history class
@@ -36,7 +39,8 @@ class Tomorrow : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_tommorrow, container, false)
+        _binding = FragmentTommorrowBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
 
@@ -45,8 +49,8 @@ class Tomorrow : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         val layoutManager = LinearLayoutManager(requireContext())
-        rv_tomorrow.layoutManager = layoutManager
-        rv_tomorrow.addItemDecoration(
+        binding.rvTomorrow.layoutManager = layoutManager
+        binding.rvTomorrow.addItemDecoration(
             DividerItemDecoration(
                 requireContext(),
                 layoutManager.orientation
@@ -65,8 +69,8 @@ class Tomorrow : Fragment() {
         activity?.toast(Common.formattedTomorrow)
         // check if it is weekend
         if (Common.dowTomGood == "Saturday" || Common.dowTomGood == "Sunday") {
-            txt_tom.visibility = View.VISIBLE
-            txt_tom.text = "Lecture Free Day \n Enjoy the Weekend!"
+            binding.txtTom.visibility = View.VISIBLE
+            binding.txtTom.text = "Lecture Free Day \n Enjoy the Weekend!"
 //            Log.d("EQUA", "getRealTimeCourses: ")
         }else {
             //if the 'tomorrow' is between Monday and Thursday, fetch the day of the week
@@ -117,19 +121,20 @@ class Tomorrow : Fragment() {
         }catch (e: Exception){
             activity?.toast(e.message.toString())
         }
-            rv_tomorrow.adapter = courseAdapter
+            courseAdapter!!.startListening()
+            binding.rvTomorrow.adapter = courseAdapter
         }
     }
-//
-    override fun onStart() {
-        super.onStart()
-            courseAdapter!!.startListening()
-            }
-//
+
     override fun onStop() {
         super.onStop()
         if (courseAdapter != null)
             courseAdapter!!.stopListening()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
 }

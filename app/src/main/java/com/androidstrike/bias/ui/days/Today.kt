@@ -2,7 +2,6 @@ package com.androidstrike.bias.ui.days
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -12,22 +11,13 @@ import android.location.Location
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-import android.text.Editable
-import android.text.InputType
-import android.text.TextWatcher
 import android.util.Log
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
-import androidx.biometric.BiometricPrompt
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -36,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.androidstrike.bias.BuildConfig
 import com.androidstrike.bias.R
 import com.androidstrike.bias.adapters.CourseAdapter
+import com.androidstrike.bias.databinding.FragmentTodayBinding
 import com.androidstrike.bias.model.CourseDetail
 import com.androidstrike.bias.model.User
 //import com.androidstrike.tera.data.CourseDetail
@@ -46,8 +37,6 @@ import com.androidstrike.bias.utils.Common.caritasLocationLatitudeNew
 //import com.androidstrike.bias.utils.Common.caritasLocationLongitude
 import com.androidstrike.bias.utils.Common.caritasLocationLongitudeNew
 import com.androidstrike.bias.utils.Common.homeLocation
-import com.androidstrike.bias.utils.Common.userCollectionRef
-import com.androidstrike.bias.utils.Common.userId
 import com.androidstrike.bias.utils.IRecyclerItemClickListener
 //import com.androidstrike.tera.utils.IRecyclerItemClickListener
 import com.androidstrike.bias.utils.toast
@@ -55,26 +44,22 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.SetOptions
-//import com.ramotion.fluidslider.FluidSlider
-import kotlinx.android.synthetic.main.fragment_today.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
+import java.io.IOException
+//import com.ramotion.fluidslider.FluidSlider
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.time.LocalTime
 import java.util.*
 import java.util.concurrent.Executor
-import kotlin.collections.HashMap
 
 class Today : Fragment() {
 
+    private var _binding: FragmentTodayBinding? = null
+    private val binding get() = _binding!!
     /**
      * Provides the entry point to the Fused Location Provider API.
      */
@@ -88,9 +73,9 @@ class Today : Fragment() {
     private var mLatitudeLabel: String? = null
     private var mLongitudeLabel: String? = null
 
-    lateinit var userLong: String
-    lateinit var userLat: String
-    lateinit var userLocation: String
+//    lateinit var userLong: String
+  //  lateinit var userLat: String
+//    lateinit var userLocation: String
     private lateinit var container: View
 
 
@@ -111,16 +96,16 @@ class Today : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_today, container, false)
+        _binding = FragmentTodayBinding.inflate(inflater, container, false)
+        return binding.root
     }
-
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 //        isThereConnection()
-        todayRecyclerView = rv_today
-        container = layout_today
+        todayRecyclerView = binding.rvToday
+        container = binding.layoutToday
 
 
         getRealTimeCourses()
@@ -137,17 +122,16 @@ class Today : Fragment() {
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
     }
-
     @RequiresApi(Build.VERSION_CODES.O)
     private fun getRealTimeCourses() {
         //if the 'today' is Friday or Saturday, show the text below
-        if (Common.dowGood == "Friday" || Common.dowGood == "Saturday") {
-            txt.visibility = View.VISIBLE
-            txt.text = "Lecture Free Day\nEnjoy the Weekend!"
+        if (Common.dowGood == "Saturday") {
+            binding.txt.visibility = View.VISIBLE
+            binding.txt.text = "Lecture Free Day\nEnjoy the Weekend!"
         } else if (Common.dowGood == "Sunday") {
             //if the 'today' is Sunday, show the text below
-            txt.visibility = View.VISIBLE
-            txt.text = "Lecture Free Day \n Prepare for Tomorrow!"
+            binding.txt.visibility = View.VISIBLE
+            binding.txt.text = "Lecture Free Day \n Prepare for Tomorrow!"
         } else {
             //if the 'today' is between Monday and Thursday, fetch the day of the week
             // ...and access its corresponding collection in the firestore
@@ -205,8 +189,8 @@ class Today : Fragment() {
                             holder.setClick(object : IRecyclerItemClickListener {
                                 override fun onItemClickListener(view: View, position: Int) {
 
-                                    Log.d("LatTruth", "onItemClickListener: ${isLatitudeEqual()}")
-                                    Log.d("LongTruth", "onItemClickListener: ${isLongitudeEqual()}")
+//                                    Log.d("LatTruth", "onItemClickListener: ${isLatitudeEqual()}")
+//                                    Log.d("LongTruth", "onItemClickListener: ${isLongitudeEqual()}")
                                     val c = Calendar.getInstance()
                                     val format = SimpleDateFormat("HH:mm")
                                     val currentTime = format.format(c.time)
@@ -226,7 +210,7 @@ class Today : Fragment() {
                                     } else {
                                         //check if user location corresponds with lecture location
 //                                        if (!isLatitudeEqual() || !isLongitudeEqual()) {
-                                        if (!isLocationEqual()) {
+                                        if (!isLocationEqual(model)) {
                                             activity?.toast("You are not in the class")
 
                                         } else {
@@ -340,27 +324,30 @@ class Today : Fragment() {
     }
 
 
-    fun isLocationEqual(): Boolean {
+    fun isLocationEqual(model: CourseDetail): Boolean {
         //function to check if the user latitude is same with class latitude
-        if (userLocation == homeLocation) {
+        if (getLastLocation() == model.course_location) {
+            Log.d(TAG, "isLocationEqual: ${getLastLocation()} true")
             return true
         }
-        return false
-    }   fun isLatitudeEqual(): Boolean {
-        //function to check if the user latitude is same with class latitude
-        if (userLat == caritasLocationLatitudeNew) {
-            return true
-        }
+        Log.d(TAG, "isLocationEqual: false")
         return false
     }
+//    fun isLatitudeEqual(): Boolean {
+//        //function to check if the user latitude is same with class latitude
+//        if (userLat == caritasLocationLatitudeNew) {
+//            return true
+//        }
+//        return false
+//    }
 
-    fun isLongitudeEqual(): Boolean {
-        //function to check if the user longitude is same with class longitude
-        if (userLong == caritasLocationLongitudeNew) {
-            return true
-        }
-        return false
-    }
+//    fun isLongitudeEqual(): Boolean {
+//        //function to check if the user longitude is same with class longitude
+//        if (userLong == caritasLocationLongitudeNew) {
+//            return true
+//        }
+//        return false
+//    }
 
 //    private fun showAttendanceDialog(attendanceQuestion: String?, attendanceAnswer: String?) {
 //
@@ -659,11 +646,11 @@ class Today : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        if (!checkPermissions()) {
-            requestPermissions()
-        } else {
-            getLastLocation()
-        }
+//        if (!checkPermissions()) {
+//            requestPermissions()
+//        } else {
+//            getLastLocation()
+//        }
     }
 
     /**
@@ -676,40 +663,54 @@ class Today : Fragment() {
      * Note: this method should be called after location permission has been granted.
      */
     @SuppressLint("MissingPermission")
-    private fun getLastLocation() {
-        //gets the location of the user using 'last known location' trick
-        mFusedLocationClient!!.lastLocation
-            .addOnCompleteListener(requireActivity()) { task ->
-                if (task.isSuccessful && task.result != null) {
-                    mLastLocation = task.result
+    private fun getLastLocation(): String {
+
+        var userLocation = ""
+
+        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
+        val geocoder: Geocoder = Geocoder(requireContext(), Locale.getDefault())
 
 
-                        val geocoder = Geocoder(requireContext(), Locale.getDefault())
-                        val list: List<Address> =
-                            geocoder.getFromLocation(mLastLocation!!.latitude, mLastLocation!!.longitude, 1)!!
-
-                        //mUsageLocality = "Locality\n${list[0].locality}"
-                        val currentLocation = list[0].subLocality// .getAddressLine(0)
-                        requireContext().toast("$currentLocation")
-
-
-                    //mLastLocation
-                    mLatitudeLabel = "${(mLastLocation)!!.latitude}"
-                    mLongitudeLabel = "${(mLastLocation)!!.longitude}"
-
-                    //gets the 1st 7 characters from the location
-                    //this was in order to avoid making a comparison with the user's pin point location, which changes with even a change in static direction
-                    userLong = mLongitudeLabel!!.take(7)
-                    userLat = mLatitudeLabel!!.take(7)
+        fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+            if (location != null) {
+                // Use the location object to get latitude and longitude.
+                val latitude = location.latitude
+                val longitude = location.longitude
+                Log.d(TAG, "longitude: $longitude ")
+                var currentLocation = ""
+                try {
+                    val addresses: List<Address>? = geocoder.getFromLocation(latitude, longitude, 1)
+                    Log.d(TAG, "addresses: $addresses")
+                    currentLocation = addresses?.get(0)?.locality!!// .getAddressLine(0)
                     userLocation = currentLocation
 
-                    Log.d("LocationHome", "getLastLocation: $mLatitudeLabel, $mLongitudeLabel")
+                    //val currentLocation = list[0].subLocality// .getAddressLine(0)
+                    //requireContext().toast("$currentLocation")
 
-                } else {
-                    Log.w(TAG, "getLastLocation:exception", task.exception)
-                    showMessage(getString(R.string.no_location_detected))
+
+                }catch (e: IOException) {
+                    e.printStackTrace()
                 }
+
+
+                //driverLocation = "$latitude,$longitude"
+
+                //navigateToLocation(latitude, longitude)
+
+                // Now you have the current location. You can use it as needed.
+                // For example, show it on a map or send it to your server.
+            } else {
+                // Location is null, handle this case as needed.
+                // For example, show an error message or request location updates.
             }
+        }.addOnFailureListener { exception: Exception ->
+            // Handle the failure to get the location.
+            // For example, show an error message or request location updates.
+            requireContext().toast(exception.message.toString())
+        }
+
+        return userLocation
+
     }
 
     /**
@@ -726,6 +727,11 @@ class Today : Fragment() {
         listener: View.OnClickListener
     ) {
         activity?.toast(getString(mainTextStringId))
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {

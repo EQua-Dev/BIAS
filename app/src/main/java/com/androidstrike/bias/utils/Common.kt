@@ -19,7 +19,7 @@ object Common {
     var clickedCourse: String = ""
     lateinit var currentUser: Any
 //    val caritasLocationLatitude = "6.503629437806139" //6.5036,7.569
-    val homeLocation = "Ogui" //Caritas
+    val homeLocation = "Futo" //Caritas
     val caritasLocationLatitudeNew = " 6.5039697" //Caritas
     //katampe ext 6.5039697,7.568131
 //    val caritasLocationLatitudeNew = "6.41441" //enugu

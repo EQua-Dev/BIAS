@@ -18,7 +18,6 @@ import com.androidstrike.bias.utils.setOnSingleClickListener
 import com.androidstrike.bias.utils.toast
 import com.androidstrike.bias.utils.visible
 import com.rengwuxian.materialedittext.MaterialEditText
-import kotlinx.android.synthetic.main.fragment_sign_up.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

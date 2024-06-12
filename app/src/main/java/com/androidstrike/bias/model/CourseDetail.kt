@@ -14,6 +14,7 @@ data class CourseDetail(
     var start_time: String? = "",
     var end_time: String? = "",
     var attendance_question: String? = "",
-    var attendance_answer: String? = ""
+    var attendance_answer: String? = "",
+    var course_location: String? = ""
 //    var newTime:
 ): Parcelable

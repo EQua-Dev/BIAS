@@ -5,14 +5,15 @@ import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.androidstrike.bias.AttendanceOverviewDirections
 import com.androidstrike.bias.R
+import com.androidstrike.bias.databinding.CustomHistoryItemBinding
 import com.androidstrike.bias.utils.Common
 import com.androidstrike.bias.utils.IRecyclerItemClickListener
-import kotlinx.android.parcel.Parcelize
-import kotlinx.android.synthetic.main.custom_history_item.view.*
+import kotlinx.parcelize.Parcelize
 
 class HistoryAdapter (val context: Context, val courses: List<Course>) :
 RecyclerView.Adapter<HistoryAdapter.MyViewHolder>(), View.OnClickListener {
@@ -24,9 +25,9 @@ RecyclerView.Adapter<HistoryAdapter.MyViewHolder>(), View.OnClickListener {
         this.iRecyclerItemClickListener = iRecyclerItemClickListener
     }
 
-    inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class MyViewHolder(private val binding: CustomHistoryItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun setData(day: Course?, position: Int) {
-            itemView.txt_course_name.text = day!!.course
+            binding.txtCourseName.text = day!!.course
             Common.clickedCourse = day.course
 
             this.currentDay = day
@@ -52,9 +53,9 @@ RecyclerView.Adapter<HistoryAdapter.MyViewHolder>(), View.OnClickListener {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val view =
-            LayoutInflater.from(context).inflate(R.layout.custom_history_item, parent, false)
-        return MyViewHolder(view)
+        val binding = CustomHistoryItemBinding.inflate(
+            LayoutInflater.from(parent.context), parent, false)
+        return MyViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {

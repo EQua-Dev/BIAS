@@ -8,23 +8,27 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.androidstrike.bias.adapters.HistoryAdapter
-import kotlinx.android.synthetic.main.fragment_attendance_overview.*
+import com.androidstrike.bias.databinding.FragmentAttendanceOverviewBinding
 
 class AttendanceOverview : Fragment() {
+
+    private var _binding: FragmentAttendanceOverviewBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_attendance_overview, container, false)
+        _binding = FragmentAttendanceOverviewBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         val layoutManager = LinearLayoutManager(requireContext())
-        rv_history.layoutManager = layoutManager
-        rv_history.addItemDecoration(
+        binding.rvHistory.layoutManager = layoutManager
+        binding.rvHistory.addItemDecoration(
             DividerItemDecoration(
                 requireContext(),
                 layoutManager.orientation
@@ -32,6 +36,11 @@ class AttendanceOverview : Fragment() {
         )
         val adapter = HistoryAdapter(requireContext(), HistoryAdapter.Supplier.courses)
 
-        rv_history.adapter = adapter
+        binding.rvHistory.adapter = adapter
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

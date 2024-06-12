@@ -55,7 +55,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
-                    android:text="a@c.com"
                     android:hint="@string/sign_up_email"
                     android:inputType="textEmailAddress" />
 
@@ -65,7 +64,6 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
                     android:hint="@string/log_in_password"
-                    android:text="qqqq1111"
                     android:inputType="textPassword"
                     app:passwordToggleEnabled="true" />
 
